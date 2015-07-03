@@ -1,7 +1,9 @@
 package maphack.qutcode.navlights;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -20,12 +22,27 @@ public class MainHeatmap extends FragmentActivity {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private HeatmapTileProvider mProvider;
     private TileOverlay mOverlay;
+    private static Context mContext;
+    private DatabaseHelp dbHelp;
+    private Cursor accidents;
+    private ArrayList<Accident> accidentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
+        mContext = getApplicationContext();
+        dbHelp = new DatabaseHelp(this);
+        Cursor c = dbHelp.getAccidents();
+        accidentList = new ArrayList<Accident>();
+        for (c.moveToFirst();!c.isAfterLast();c.moveToNext()){
+            if (c.getDouble(1) > 0) {
+                Accident addAcc = new Accident(c.getInt(0), c.getDouble(1), c.getDouble(2),
+                        c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6));
+                accidentList.add(addAcc);
+            }
+        }
     }
 
     @Override
@@ -34,6 +51,12 @@ public class MainHeatmap extends FragmentActivity {
         setUpMapIfNeeded();
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        dbHelp.close();
+        accidents.close();
+    }
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
