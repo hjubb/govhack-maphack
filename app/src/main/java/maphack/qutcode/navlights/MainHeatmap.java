@@ -2,9 +2,13 @@ package maphack.qutcode.navlights;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.location.*;
+import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -15,17 +19,21 @@ import com.google.maps.android.heatmaps.WeightedLatLng;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainHeatmap extends FragmentActivity {
+public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private LocationManager locationManager;
     private HeatmapTileProvider mProvider;
     private TileOverlay mOverlay;
+    private static final long MIN_TIME = 400;
+    private static final float MIN_DISTANCE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
+
     }
 
     @Override
@@ -72,6 +80,17 @@ public class MainHeatmap extends FragmentActivity {
         addHeatMap();
         mMap.setMyLocationEnabled(true);
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME,MIN_DISTANCE,this);
+
+    }
+    @Override
+    public void onLocationChanged(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+        mMap.animateCamera(cameraUpdate);
+        //locationManager.removeUpdates(this);
     }
 
     private void addHeatMap() {
@@ -85,4 +104,14 @@ public class MainHeatmap extends FragmentActivity {
                 .build();
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
-}
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+    @Override
+    public void onProviderEnabled(String provider) { }
+
+    @Override
+    public void onProviderDisabled(String provider) { }
+    }
+

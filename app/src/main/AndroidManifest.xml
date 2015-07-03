@@ -26,13 +26,20 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name="maphack.qutcode.navlights.SplashScreen"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+
+            </activity>
+
+        <activity
             android:name=".MainHeatmap"
             android:label="@string/title_activity_main_heatmap" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
