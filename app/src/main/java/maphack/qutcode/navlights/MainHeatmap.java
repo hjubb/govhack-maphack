@@ -7,11 +7,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.google.maps.android.heatmaps.WeightedLatLng;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainHeatmap extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,19 @@ public class MainHeatmap extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        addHeatMap();
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+
+    private void addHeatMap() {
+        List<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
+        list.add(new WeightedLatLng(new LatLng(1, -1), 1));
+        list.add(new WeightedLatLng(new LatLng(2, -1), 2));
+        list.add(new WeightedLatLng(new LatLng(3, -2), 1));
+        list.add(new WeightedLatLng(new LatLng(4, -3), 3));
+        mProvider = new HeatmapTileProvider.Builder()
+                .weightedData(list)
+                .build();
+        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
 }
