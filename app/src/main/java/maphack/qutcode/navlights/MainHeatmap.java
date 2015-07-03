@@ -70,6 +70,7 @@ public class MainHeatmap extends FragmentActivity {
      */
     private void setUpMap() {
         addHeatMap();
+        mMap.setMyLocationEnabled(true);
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
