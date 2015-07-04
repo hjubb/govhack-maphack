@@ -67,6 +67,8 @@ public class AccidentCollection {
             accidents.add(new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
             c.moveToNext();
         }
+        c.close();
+        DataBase.close();
     }
 
     private void setupHeatMap() {
