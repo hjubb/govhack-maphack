@@ -38,6 +38,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
 
+
     }
 
     @Override
@@ -100,9 +101,9 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     public void onLocationChanged(Location location) {
         //mMap.getProjection().getVisibleRegion().latLngBounds;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-        mMap.animateCamera(cameraUpdate);
-        //locationManager.removeUpdates(this);
+        CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
+        System.out.print(location.getLatitude());
+        mMap.animateCamera(update);
     }
 
     private void setupHeatMap() {
