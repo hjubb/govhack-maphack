@@ -14,3 +14,4 @@ Sample Road Crash Location Data with Latitude and Longitude: https://data.qld.go
 * Matthew Laughlin
 * Harry Jubb
 * Connor Reichman
+* João Lucas Lucchetta
