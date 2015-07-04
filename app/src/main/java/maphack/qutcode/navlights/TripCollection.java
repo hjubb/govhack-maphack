@@ -11,11 +11,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import maphack.qutcode.navlights.TripResults;
+
 /**
  * Created by kane on 5/07/2015.
  */
 public class TripCollection {
-    ArrayList<Trip> trips;
+    ArrayList<TripResults> trips;
     Trip currentTrip;
     GoogleMap mMap;
 
@@ -28,9 +30,9 @@ public class TripCollection {
         if (currentTrip == null) {
             currentTrip = new Trip(mMap);
         } else {
-            currentTrip.end();
-            trips.add(currentTrip);
+            trips.add(currentTrip.end());
             currentTrip = null;
+            mMap.clear();
         }
     }
 

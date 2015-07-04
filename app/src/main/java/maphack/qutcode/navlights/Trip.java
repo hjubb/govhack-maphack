@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import maphack.qutcode.navlights.TripResults;
+
 /**
  * Created by kane on 5/07/2015.
  */
@@ -34,9 +36,10 @@ public class Trip {
                 .add(new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude())));
     }
 
-    public void end() {
+    public TripResults end() {
         //save shit
         endTime = Calendar.getInstance().getTime();
+        return new TripResults(startTime, endTime, trip.getPoints());
     }
 
     public void update(Location location) {
@@ -45,6 +48,7 @@ public class Trip {
         trip.setPoints(points);
     }
 
+    //this isn't really needed but ill keep it here for future fun times
     public void plot(GoogleMap mMap) {
         Polyline temp = mMap.addPolyline(new PolylineOptions()
                 .width(2)
