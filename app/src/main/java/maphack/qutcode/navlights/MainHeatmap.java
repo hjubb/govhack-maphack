@@ -13,6 +13,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import maphack.qutcode.navlights.filters.Filters;
+
 public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -22,6 +24,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Filters.prepare();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();

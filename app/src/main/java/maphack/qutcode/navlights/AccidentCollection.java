@@ -14,6 +14,8 @@ import com.google.maps.android.heatmaps.WeightedLatLng;
 import java.util.ArrayList;
 import java.util.List;
 
+import maphack.qutcode.navlights.filters.Filters;
+
 /**
  * Created by kane on 4/07/2015.
  */
@@ -36,7 +38,7 @@ public class AccidentCollection {
         int renderCount = 0;
         for (Accident a : accidents) {
             if (underRenderLimit(renderCount)) {
-                if (bounds.contains(a.getLocation()) && a.toDisplay()) {
+                if (bounds.contains(a.getLocation()) && Filters.toDisplay(a)) {
                     list.add(a);
                     renderCount++;
                 }

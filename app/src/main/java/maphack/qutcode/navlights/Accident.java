@@ -8,18 +8,20 @@ import com.google.maps.android.heatmaps.WeightedLatLng;
  */
 public class Accident extends WeightedLatLng{
     private LatLng loc;
+    private int fatality;
 
     public Accident(LatLng location, int fatal, int hospital, int major, int minor)
     {
         super(location, (3*fatal + 2*hospital + 2*major + minor));
         loc = location;
+        fatality = fatal;
     }
 
     public LatLng getLocation() {
         return loc;
     }
 
-    public boolean toDisplay() {
-        return true;
+    public int getFatality() {
+        return fatality;
     }
 }
