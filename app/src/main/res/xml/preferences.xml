@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference android:title="Min. Severity Number"
+        android:key="minSeverity"
+        android:inputType="number"
+        android:summary="Please provide the minimum severity value to be shown on the map"></EditTextPreference>
+    <EditTextPreference android:title="Max. Severity Number"
+        android:key="maxSeverity"
+        android:inputType="number"
+        android:summary="Please provide the maximum severity value to be shown on the map"></EditTextPreference>
+    <ListPreference android:title="Weather"
+        android:summary="PLease set the Weather Preference "
+        android:key="weatherPref"
+        android:defaultValue="1"
+        android:entries="@array/weatherConditions"
+        android:entryValues="@array/weatherValues"/>
+
+    <ListPreference android:title="Day Time "
+        android:summary="Set the Day time preference"
+        android:key="daytimePref"
+        android:defaultValue="1"
+        android:entries="@array/daytimeOptions"
+        android:entryValues="@array/daytimeValues"/>
+
+
+</PreferenceScreen>

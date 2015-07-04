@@ -1,5 +1,8 @@
 package maphack.qutcode.navlights;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.location.*;
@@ -9,7 +12,9 @@ import android.database.Cursor;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +39,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import maphack.qutcode.navlights.AppPreferences;
 import maphack.qutcode.navlights.filters.Filters;
 
 public class MainHeatmap extends AppCompatActivity implements LocationListener{
@@ -86,42 +92,51 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
                 })
                 .build();
 
-        new DrawerBuilder()
-                .withActivity(this)
-                .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Severity"),
-                        new PrimaryDrawerItem().withName("Weather"),
-                        new PrimaryDrawerItem().withName("Lighting")
-                ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
-                            //Add here the controls for the buttons responses
-                            return false;
-                    }
-                })
-                .withDrawerGravity(Gravity.END)
-                .append(result);
+
 
 
 
     }
 
-    /*
-     * This method adds items for the NavBar.
-     */
-    private void addDrawerItems() {
-        String[] osArray = { "Option 1", "Option 2", "Option 3", "Option 4", "Option 5" };
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-        mLearnerMenu.setAdapter(mAdapter);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_heatmap_actions, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                doSettings();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
 
+    public void doSettings(){
+        Intent intent = new Intent(this, AppPreferences.class);
+        startActivity(intent);
+    }
+    
+    public void checkSettings(){
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        Log.d("SETTINGS",SP.getString("daytimePref","1"));
+
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
+        checkSettings();
         setUpMapIfNeeded();
     }
+
+
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly

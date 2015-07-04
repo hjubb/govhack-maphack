@@ -42,6 +42,11 @@
             android:label="@string/title_activity_main_heatmap" >
         </activity>
 
+        <activity
+            android:name=".AppPreferences"
+            android:label="Settings" >
+        </activity>
+
 
     </application>
 
