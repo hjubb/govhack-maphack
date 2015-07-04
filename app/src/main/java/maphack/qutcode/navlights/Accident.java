@@ -18,4 +18,8 @@ public class Accident extends WeightedLatLng{
     public LatLng getLocation() {
         return loc;
     }
+
+    public boolean toDisplay() {
+        return true;
+    }
 }
