@@ -10,7 +10,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
@@ -28,7 +30,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     private TileOverlay mOverlay;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
-    private DatabaseHelp DataBase;
+    private Cursor c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +81,17 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        addHeatMap();
+        DatabaseHelp DataBase = new DatabaseHelp(this);
+        c = DataBase.getAccidents();
         mMap.setMyLocationEnabled(true);
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                MainHeatmap.this.addHeatMap();
+            }
+        });
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME,MIN_DISTANCE,this);
@@ -89,29 +99,27 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     }
     @Override
     public void onLocationChanged(Location location) {
+        //mMap.getProjection().getVisibleRegion().latLngBounds;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         mMap.animateCamera(cameraUpdate);
         //locationManager.removeUpdates(this);
     }
 
-    private void addHeatMap() {
+    private void setupHeatMap() {
         List<WeightedLatLng> list = new ArrayList<>();
 
-        DataBase = new DatabaseHelp(this);
-        Cursor c = DataBase.getAccidents();
         c.moveToFirst();
         int counter = 0;
-        while(!c.isAfterLast() && counter < 1000) {
-            counter++;
-
-            double lat = c.getDouble(1);
-            double lng = c.getDouble(2);
+        while(!c.isAfterLast() && counter < 10) {
+            LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
 
             //list.add(new LatLng(lat, lng));
-            list.add(new Accident(lat, lng, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
+            counter++;
+            list.add(new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
             c.moveToNext();
         }
+        System.out.println(list.size());
 
         mProvider = new HeatmapTileProvider.Builder()
                 .weightedData(list)
@@ -119,6 +127,16 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
                 .opacity(1)
                 .build();
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+
+    }
+
+    private void updateHeatMap() {
+        List<WeightedLatLng> list = new ArrayList<>();
+        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        System.out.println("bounds: " + bounds.toString());
+
+        mProvider.setWeightedData(list);
+        mOverlay.clearTileCache();
     }
 
     @Override
