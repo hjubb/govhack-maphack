@@ -22,6 +22,8 @@ import com.google.maps.android.heatmaps.WeightedLatLng;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -94,7 +96,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
         });
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME,MIN_DISTANCE,this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
     }
     @Override
