@@ -82,7 +82,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        setupHeatMap();
+        setupAccidents();
         mMap.setMyLocationEnabled(true);
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
 
@@ -106,7 +106,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
         mMap.animateCamera(update);
     }
 
-    private void setupHeatMap() {
+    private void setupAccidents() {
         accidents = new ArrayList<>();
         DatabaseHelp DataBase = new DatabaseHelp(this);
         Cursor c = DataBase.getAccidents();
@@ -116,27 +116,15 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
             accidents.add(new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
             c.moveToNext();
         }
-
-        ArrayList<WeightedLatLng> l = new ArrayList<>();
-        l.add(new WeightedLatLng(new LatLng(1, 1), 1));
-
-        mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(l)
-                .radius(20)
-                .opacity(1)
-                .build();
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-
     }
 
     private void updateHeatMap() {
         List<WeightedLatLng> list = new ArrayList<>();
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        System.out.println("bounds: " + bounds.toString());
 
         int c = 0;
         int i = 0;
-        while (i < accidents.size() && c < 200) {
+        while (i < accidents.size() && c < 350) {
             if (bounds.contains(accidents.get(i).getLocation())) {
                 list.add(accidents.get(i));
                 c++;
@@ -144,11 +132,19 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
             i++;
         }
 
-        if (list.size() == 0) {
-            list.add(new WeightedLatLng(new LatLng(1, 1), 1));
+        if (list.size() != 0) {
+            if (mProvider == null) {
+                mProvider = new HeatmapTileProvider.Builder()
+                        .weightedData(list)
+                        .radius(20)
+                        .opacity(0.8)
+                        .build();
+                mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+            } else {
+                mProvider.setWeightedData(list);
+                mOverlay.clearTileCache();
+            }
         }
-        mProvider.setWeightedData(list);
-        mOverlay.clearTileCache();
     }
 
     @Override
