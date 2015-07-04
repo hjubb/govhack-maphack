@@ -2,7 +2,8 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+       <item name="android:colorBackground">@color/blue_medium</item>
+       <item name="android:textColor">#FFF</item>
     </style>
 
     <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">

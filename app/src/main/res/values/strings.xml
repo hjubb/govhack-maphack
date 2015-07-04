@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">NavLights</string>
-    <string name="title_activity_main_heatmap">Heatmap</string>
+    <string name="title_activity_main_heatmap">NavLights</string>
+    <string name="actions_settings">Settings</string>
+    <string name="drawer_open">Open Sidebar</string>
+    <string name="drawer_close">Close Sidebar</string>
 
 
 </resources>
