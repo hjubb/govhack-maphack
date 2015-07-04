@@ -50,7 +50,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
 
-        
+
         //Toggle Button
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
