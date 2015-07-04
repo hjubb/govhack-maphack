@@ -41,6 +41,8 @@
             android:name=".MainHeatmap"
             android:label="@string/title_activity_main_heatmap" >
         </activity>
+
+
     </application>
 
 </manifest>

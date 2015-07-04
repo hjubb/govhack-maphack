@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.location.*;
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -27,6 +28,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     private TileOverlay mOverlay;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
+    private DatabaseHelp DataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,18 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     private void addHeatMap() {
         List<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
+        DataBase = new DatabaseHelp(this);
+        Cursor c = DataBase.getAccidents();
+        c.moveToFirst();
+        while(!c.isAfterLast()) {
+
+            double lat = c.getDouble(1);
+            double lng = c.getDouble(2);
+
+            list.add(new WeightedLatLng(new LatLng(lat, lng), c.getInt(3)));
+            c.moveToNext();
+        }
+
         list.add(new WeightedLatLng(new LatLng(1, -1), 1));
         list.add(new WeightedLatLng(new LatLng(2, -1), 2));
         list.add(new WeightedLatLng(new LatLng(3, -2), 1));
