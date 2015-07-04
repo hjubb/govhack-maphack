@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.location.*;
 import android.content.Context;
+
 import android.database.Cursor;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -16,29 +17,23 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.google.maps.android.heatmaps.WeightedLatLng;
 
-import java.util.ArrayList;
-import java.util.List;
+import maphack.qutcode.navlights.filters.Filters;
 
 public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private LocationManager locationManager;
-    private HeatmapTileProvider mProvider;
-    private TileOverlay mOverlay;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
-    private DatabaseHelp DataBase;
+    private AccidentCollection ac;
 
 
     private ListView mDrawerList;
@@ -50,9 +45,11 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Filters.prepare();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
+
         
         //Toggle Button
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
@@ -115,46 +112,28 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        addHeatMap();
+        ac = new AccidentCollection(mMap, this);
         mMap.setMyLocationEnabled(true);
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                MainHeatmap.this.ac.updateHeatMap();
+            }
+        });
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME,MIN_DISTANCE,this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
     }
+
     @Override
     public void onLocationChanged(Location location) {
+        //mMap.getProjection().getVisibleRegion().latLngBounds;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-        mMap.animateCamera(cameraUpdate);
-        //locationManager.removeUpdates(this);
-    }
-
-    private void addHeatMap() {
-        List<WeightedLatLng> list = new ArrayList<>();
-
-        DataBase = new DatabaseHelp(this);
-        Cursor c = DataBase.getAccidents();
-        c.moveToFirst();
-        int counter = 0;
-        while(!c.isAfterLast() && counter < 1000) {
-            counter++;
-
-            double lat = c.getDouble(1);
-            double lng = c.getDouble(2);
-
-            //list.add(new LatLng(lat, lng));
-            list.add(new Accident(lat, lng, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
-            c.moveToNext();
-        }
-
-        mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(list)
-                .radius(20)
-                .opacity(1)
-                .build();
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
+        System.out.print(location.getLatitude());
+        mMap.animateCamera(update);
     }
 
     @Override
@@ -165,5 +144,5 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
     @Override
     public void onProviderDisabled(String provider) { }
-    }
+}
 
