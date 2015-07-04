@@ -5,6 +5,19 @@ import android.os.Bundle;
 import android.location.*;
 import android.content.Context;
 
+import android.database.Cursor;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdate;
@@ -15,7 +28,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import maphack.qutcode.navlights.filters.Filters;
 
-
 public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -23,13 +35,41 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     private static final float MIN_DISTANCE = 1000;
     private AccidentCollection ac;
 
+
+    private ListView mDrawerList;
+    private ArrayAdapter<String> mAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private String mActivityTitle;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Filters.prepare();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
+
+        
+        //Toggle Button
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mActivityTitle = getTitle().toString();
+
+        //Setting the list view for the Navbar
+        mDrawerList = (ListView)findViewById(R.id.navList);
+        addDrawerItems();
     }
+
+    /*
+     * This method adds items for the NavBar.
+     */
+    private void addDrawerItems() {
+        String[] osArray = { "Option 1", "Option 2", "Option 3", "Option 4", "Option 5" };
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+        mDrawerList.setAdapter(mAdapter);
+    }
+
+
 
     @Override
     protected void onResume() {
