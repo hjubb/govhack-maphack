@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import maphack.qutcode.navlights.filters.Filters;
 
+
 public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.

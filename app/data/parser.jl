@@ -33,6 +33,6 @@ end
 
 totalSeverity = map(cumSeverity, sevint, fatal, hospital, medtreat, injury)
 
-finalCsv = hcat(totalSeverity, lon, lat)
+finalCsv = hcat(lon, lat, totalSeverity)
 
 writecsv("weightedlocations.csv", finalCsv)
