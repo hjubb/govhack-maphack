@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 public class DatabaseHelp extends SQLiteAssetHelper {
@@ -22,15 +23,20 @@ public class DatabaseHelp extends SQLiteAssetHelper {
         //super(context, DATABASE_NAME, context.getExternalFilesDir(null).getAbsolutePath(), null, DATABASE_VERSION);
 
     }
-    public Cursor getAccidents(){
+    public Cursor getAccidents(LatLngBounds bounds, int limit){
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String[] sqlSelect = {"0 _id","LAT","LONG","COUNT_FATALITY","COUNT_HOSPITAL","COUNT_MAJOR","COUNT_MINOR"};
         String sqlTable = "accidents";
         qb.setTables(sqlTable);
 
-        Cursor c = qb.query(db,sqlSelect,null,null,null,null,null);
-        //c.moveToFirst();
+        Cursor c = qb.query(db,sqlSelect,"LAT <= "+bounds.northeast.latitude
+                        +" AND LAT >= "+bounds.southwest.latitude
+                        +" AND LONG <= "+bounds.northeast.longitude
+                        +" AND LONG >= "+bounds.southwest.longitude,
+                null,
+                null,null,null);
+        c.moveToFirst();
         return c;
 
     }

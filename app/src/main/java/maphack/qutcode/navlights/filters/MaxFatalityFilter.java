@@ -9,7 +9,6 @@ public class MaxFatalityFilter extends Filter{
     private static int maxFatality;
 
     public MaxFatalityFilter() {
-        super();
         maxFatality = 0;
     }
 

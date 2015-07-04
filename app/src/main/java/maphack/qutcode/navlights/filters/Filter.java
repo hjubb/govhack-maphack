@@ -6,11 +6,7 @@ import maphack.qutcode.navlights.Accident;
  * Created by kane on 4/07/2015.
  */
 public abstract class Filter {
-    private boolean active;
-
-    public Filter() {
-        active = false;
-    }
+    private boolean active = false;
 
     public boolean check(Accident a) {
         if (active) {

@@ -5,12 +5,13 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.location.*;
-import android.content.Context;
 
-import android.database.Cursor;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,19 +25,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import maphack.qutcode.navlights.AppPreferences;
@@ -45,9 +42,11 @@ import maphack.qutcode.navlights.filters.Filters;
 public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 1000;
+    private static final long MIN_TIME = 0; //400
+    private static final float MIN_DISTANCE = 0; //1000
     private AccidentCollection ac;
+    private LocationManager lm;
+    private TripCollection tc;
 
 
     private ListView mLearnerMenu;
@@ -134,6 +133,13 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         super.onResume();
         checkSettings();
         setUpMapIfNeeded();
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        lm.removeUpdates(this);
     }
 
 
@@ -174,26 +180,27 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
      */
     private void setUpMap() {
         ac = new AccidentCollection(mMap, this);
+        tc = new TripCollection(mMap);
+
         mMap.setMyLocationEnabled(true);
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                MainHeatmap.this.ac.updateHeatMap();
+                MainHeatmap.this.ac.setupData(getApplicationContext());
             }
         });
 
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-
+        lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        //mMap.getProjection().getVisibleRegion().latLngBounds;
+        tc.updateCurrentTrip(location);
+
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
-        System.out.print(location.getLatitude());
         mMap.animateCamera(update);
     }
 

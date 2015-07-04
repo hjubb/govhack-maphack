@@ -9,7 +9,6 @@ public class MinFatalityFilter extends Filter {
     private static int minFatality;
 
     public MinFatalityFilter() {
-        super();
         minFatality = 0;
     }
 
