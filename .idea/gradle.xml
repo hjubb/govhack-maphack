@@ -5,7 +5,12 @@
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+<<<<<<< .merge_file_a08688
         <option name="gradleHome" value="D:\Android Studio\gradle\gradle-2.2.1" />
+=======
+        <option name="gradleHome" value="C:\Program Files\Android\Android Studio\gradle\gradle-2.2.1" />
+        <option name="gradleJvm" value="1.8" />
+>>>>>>> .merge_file_a07124
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -15,5 +20,9 @@
       </GradleProjectSettings>
     </option>
   </component>
+<<<<<<< .merge_file_a08688
 </project>
 
+=======
+</project>
+>>>>>>> .merge_file_a07124
