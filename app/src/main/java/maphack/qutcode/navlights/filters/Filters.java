@@ -15,16 +15,16 @@ public class Filters {
     public static final int LightingFilter = 3;
 
     public static void prepare() {
-        filters.add(new MaxFatalityFilter());
-        filters.add(new MinFatalityFilter());
+        filters.add(new MaxSeverityFilter());
+        filters.add(new MinSeverityFilter());
         filters.add(new RoadSurfaceFilter());
         filters.add(new LightingFilter());
 
         //testing
         //activateFilter(maxFatalityFilter, true);
-        //MaxFatalityFilter.setMaxFatality(3);
+        //MaxSeverityFilter.setMaxSeverity(3);
         //activateFilter(minFatalityFilter, true);
-        //MinFatalityFilter.setMinFatality(2);
+        //MinSeverityFilter.setMinSeverity(2);
         //activateFilter(RoadSurfaceFilter, true);
         //activateFilter(LightingFilter, true);
     }
