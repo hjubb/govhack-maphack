@@ -28,6 +28,7 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
+    compile 'com.opencsv:opencsv:3.4'
     compile('com.mikepenz:materialdrawer:3.0.9@aar') {
         transitive = true
     }

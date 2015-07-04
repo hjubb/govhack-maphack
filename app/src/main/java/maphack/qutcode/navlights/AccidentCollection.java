@@ -1,6 +1,7 @@
 package maphack.qutcode.navlights;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -9,8 +10,13 @@ import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
+import com.opencsv.CSVReader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by kane on 4/07/2015.
@@ -22,6 +28,7 @@ public class AccidentCollection {
     private GoogleMap mMap;
     private DatabaseHelp DataBase;
     private final int RENDER_LIMIT = 350;
+    private String CSV_PATH = "csv/weightedlocations.csv";
 
     public AccidentCollection(GoogleMap map, Context context) {
         mMap = map;
@@ -63,6 +70,39 @@ public class AccidentCollection {
         mOverlay.clearTileCache();
         //c.close();
         //DataBase.close();
+    }
+
+//    private void setupData(Context context) throws Exception {
+//        accidents = new ArrayList<>();
+//        List<String[]> rows = readCsv(context);
+//
+//        for (String[] r : rows) {
+//            LatLng loc = new LatLng(parseDouble(r[0]), parseDouble(r[1]));
+//            accidents.add(new Accident(loc, parseDouble(r[2])));
+//        }
+//    }
+
+    public final List<String[]> readCsv(Context context) {
+        List<String[]> accidentsList = new ArrayList<String[]>();
+        AssetManager assetManager = context.getAssets();
+
+        try {
+            InputStream csvStream = assetManager.open(CSV_PATH);
+            InputStreamReader csvStreamReader = new InputStreamReader(csvStream);
+            CSVReader csvReader = new CSVReader(csvStreamReader);
+            String[] line;
+
+            // throw away the header
+            // I didn't include a header
+//            csvReader.readNext();
+
+            while ((line = csvReader.readNext()) != null) {
+                accidentsList.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return accidentsList;
     }
 
     private void setupHeatMap() {
