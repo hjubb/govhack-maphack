@@ -11,16 +11,22 @@ public class Filters {
     private static ArrayList<Filter> filters = new ArrayList<>();
     public static final int maxFatalityFilter = 0;
     public static final int minFatalityFilter = 1;
+    public static final int RoadSurfaceFilter = 2;
+    public static final int LightingFilter = 3;
 
     public static void prepare() {
         filters.add(new MaxFatalityFilter());
         filters.add(new MinFatalityFilter());
+        filters.add(new RoadSurfaceFilter());
+        filters.add(new LightingFilter());
 
         //testing
-        //activateFilter(maxFatalityFilter, true);
-        //MaxFatalityFilter.setMaxFatality(4);
-        //activateFilter(minFatalityFilter, true);
-        //MinFatalityFilter.setMinFatality(4);
+        activateFilter(maxFatalityFilter, true);
+        MaxFatalityFilter.setMaxFatality(3);
+        activateFilter(minFatalityFilter, true);
+        MinFatalityFilter.setMinFatality(2);
+        activateFilter(RoadSurfaceFilter, true);
+        activateFilter(LightingFilter, true);
     }
 
     public static void activateFilter(int f, boolean active) {
