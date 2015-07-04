@@ -96,25 +96,27 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     }
 
     private void addHeatMap() {
-        List<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
+        List<WeightedLatLng> list = new ArrayList<>();
+
         DataBase = new DatabaseHelp(this);
         Cursor c = DataBase.getAccidents();
         c.moveToFirst();
-        while(!c.isAfterLast()) {
+        int counter = 0;
+        while(!c.isAfterLast() && counter < 1000) {
+            counter++;
 
             double lat = c.getDouble(1);
             double lng = c.getDouble(2);
 
-            list.add(new WeightedLatLng(new LatLng(lat, lng), c.getInt(3)));
+            //list.add(new LatLng(lat, lng));
+            list.add(new Accident(lat, lng, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
             c.moveToNext();
         }
 
-        list.add(new WeightedLatLng(new LatLng(1, -1), 1));
-        list.add(new WeightedLatLng(new LatLng(2, -1), 2));
-        list.add(new WeightedLatLng(new LatLng(3, -2), 1));
-        list.add(new WeightedLatLng(new LatLng(4, -3), 3));
         mProvider = new HeatmapTileProvider.Builder()
                 .weightedData(list)
+                .radius(20)
+                .opacity(1)
                 .build();
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
