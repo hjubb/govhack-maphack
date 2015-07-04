@@ -39,9 +39,10 @@ import maphack.qutcode.navlights.filters.Filters;
 public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 1000;
+    private static final long MIN_TIME = 0; //400
+    private static final float MIN_DISTANCE = 0; //1000
     private AccidentCollection ac;
+    private LocationManager lm;
 
 
     private ListView mLearnerMenu;
@@ -121,6 +122,13 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        lm.removeUpdates(this);
     }
 
     /**
@@ -168,18 +176,17 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
             }
         });
 
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-
+        lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
         //mMap.getProjection().getVisibleRegion().latLngBounds;
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
-        System.out.print(location.getLatitude());
-        mMap.animateCamera(update);
+        //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
+        //System.out.print(location.getLatitude());
+        //mMap.animateCamera(update);
     }
 
     @Override

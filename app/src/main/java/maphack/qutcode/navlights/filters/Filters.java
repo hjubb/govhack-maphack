@@ -21,12 +21,12 @@ public class Filters {
         filters.add(new LightingFilter());
 
         //testing
-        activateFilter(maxFatalityFilter, true);
-        MaxFatalityFilter.setMaxFatality(3);
-        activateFilter(minFatalityFilter, true);
-        MinFatalityFilter.setMinFatality(2);
-        activateFilter(RoadSurfaceFilter, true);
-        activateFilter(LightingFilter, true);
+        //activateFilter(maxFatalityFilter, true);
+        //MaxFatalityFilter.setMaxFatality(3);
+        //activateFilter(minFatalityFilter, true);
+        //MinFatalityFilter.setMinFatality(2);
+        //activateFilter(RoadSurfaceFilter, true);
+        //activateFilter(LightingFilter, true);
     }
 
     public static void activateFilter(int f, boolean active) {
