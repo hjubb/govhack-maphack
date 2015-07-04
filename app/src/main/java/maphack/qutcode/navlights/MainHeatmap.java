@@ -10,10 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -25,6 +27,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import maphack.qutcode.navlights.filters.Filters;
 
@@ -36,7 +44,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     private AccidentCollection ac;
 
 
-    private ListView mDrawerList;
+    private ListView mLearnerMenu;
     private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -52,12 +60,50 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
         
         //Toggle Button
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        /* mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
 
         //Setting the list view for the Navbar
-        mDrawerList = (ListView)findViewById(R.id.navList);
+        mLearnerMenu = (ListView)findViewById(R.id.navList);
         addDrawerItems();
+
+        */
+
+
+
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName("Test 1"),
+                        new PrimaryDrawerItem().withName("Test 2")
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                        //Add here the controls for the buttons responses
+                        return false;
+                    }
+                })
+                .build();
+
+        new DrawerBuilder()
+                .withActivity(this)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName("Severity"),
+                        new PrimaryDrawerItem().withName("Weather"),
+                        new PrimaryDrawerItem().withName("Lighting")
+                ).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                            //Add here the controls for the buttons responses
+                            return false;
+                    }
+                })
+                .withDrawerGravity(Gravity.END)
+                .append(result);
+
+
+
     }
 
     /*
@@ -66,7 +112,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     private void addDrawerItems() {
         String[] osArray = { "Option 1", "Option 2", "Option 3", "Option 4", "Option 5" };
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-        mDrawerList.setAdapter(mAdapter);
+        mLearnerMenu.setAdapter(mAdapter);
     }
 
 

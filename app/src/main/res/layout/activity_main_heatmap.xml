@@ -17,11 +17,18 @@
         </FrameLayout>
 
 
-    <!-- The navigation drawer -->
+    <!-- The navigation drawer
     <ListView android:id="@+id/navList"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
         android:background="@color/blue_medium"/>
 
+
+    <ListView android:id="@+id/navFilters"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|end"
+        android:background="@color/blue_medium"/>
+-->
 </android.support.v4.widget.DrawerLayout>

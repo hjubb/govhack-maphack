@@ -19,6 +19,8 @@ android {
     }
 }
 
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
@@ -26,4 +28,7 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
+    compile('com.mikepenz:materialdrawer:3.0.9@aar') {
+        transitive = true
+    }
 }
