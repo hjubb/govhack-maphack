@@ -4,7 +4,6 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.location.*;
 import android.content.Context;
-import android.database.Cursor;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -12,33 +11,20 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.google.maps.android.heatmaps.WeightedLatLng;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private LocationManager locationManager;
-    private HeatmapTileProvider mProvider;
-    private TileOverlay mOverlay;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
-    private ArrayList<Accident> accidents;
+    private AccidentCollection ac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
-
-
     }
 
     @Override
@@ -82,21 +68,21 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        setupAccidents();
+        ac = new AccidentCollection(mMap, this);
         mMap.setMyLocationEnabled(true);
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                MainHeatmap.this.updateHeatMap();
+                MainHeatmap.this.ac.updateHeatMap();
             }
         });
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME,MIN_DISTANCE,this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
     }
+
     @Override
     public void onLocationChanged(Location location) {
         //mMap.getProjection().getVisibleRegion().latLngBounds;
@@ -104,47 +90,6 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
         CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
         System.out.print(location.getLatitude());
         mMap.animateCamera(update);
-    }
-
-    private void setupAccidents() {
-        accidents = new ArrayList<>();
-        DatabaseHelp DataBase = new DatabaseHelp(this);
-        Cursor c = DataBase.getAccidents();
-        c.moveToFirst();
-        while(!c.isAfterLast()) {
-            LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
-            accidents.add(new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
-            c.moveToNext();
-        }
-    }
-
-    private void updateHeatMap() {
-        List<WeightedLatLng> list = new ArrayList<>();
-        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-
-        int c = 0;
-        int i = 0;
-        while (i < accidents.size() && c < 350) {
-            if (bounds.contains(accidents.get(i).getLocation())) {
-                list.add(accidents.get(i));
-                c++;
-            }
-            i++;
-        }
-
-        if (list.size() != 0) {
-            if (mProvider == null) {
-                mProvider = new HeatmapTileProvider.Builder()
-                        .weightedData(list)
-                        .radius(20)
-                        .opacity(0.8)
-                        .build();
-                mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-            } else {
-                mProvider.setWeightedData(list);
-                mOverlay.clearTileCache();
-            }
-        }
     }
 
     @Override
@@ -155,5 +100,5 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
 
     @Override
     public void onProviderDisabled(String provider) { }
-    }
+}
 
