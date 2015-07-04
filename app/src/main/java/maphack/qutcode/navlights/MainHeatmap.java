@@ -31,6 +31,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     private static final float MIN_DISTANCE = 0; //1000
     private AccidentCollection ac;
     private LocationManager lm;
+    private TripCollection tc;
 
 
     private ListView mLearnerMenu;
@@ -155,6 +156,8 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
      */
     private void setUpMap() {
         ac = new AccidentCollection(mMap, this);
+        tc = new TripCollection(mMap);
+
         mMap.setMyLocationEnabled(true);
         //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -170,11 +173,11 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
     @Override
     public void onLocationChanged(Location location) {
-        //mMap.getProjection().getVisibleRegion().latLngBounds;
-        //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
-        //System.out.print(location.getLatitude());
-        //mMap.animateCamera(update);
+        tc.updateCurrentTrip(location);
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
+        mMap.animateCamera(update);
     }
 
     @Override
