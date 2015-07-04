@@ -30,7 +30,7 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     private TileOverlay mOverlay;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
-    private Cursor c;
+    private ArrayList<Accident> accidents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,15 +81,14 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        DatabaseHelp DataBase = new DatabaseHelp(this);
-        c = DataBase.getAccidents();
+        setupHeatMap();
         mMap.setMyLocationEnabled(true);
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
 
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                MainHeatmap.this.addHeatMap();
+                MainHeatmap.this.updateHeatMap();
             }
         });
 
@@ -107,22 +106,21 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
     }
 
     private void setupHeatMap() {
-        List<WeightedLatLng> list = new ArrayList<>();
-
+        accidents = new ArrayList<>();
+        DatabaseHelp DataBase = new DatabaseHelp(this);
+        Cursor c = DataBase.getAccidents();
         c.moveToFirst();
-        int counter = 0;
-        while(!c.isAfterLast() && counter < 10) {
+        while(!c.isAfterLast()) {
             LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
-
-            //list.add(new LatLng(lat, lng));
-            counter++;
-            list.add(new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
+            accidents.add(new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
             c.moveToNext();
         }
-        System.out.println(list.size());
+
+        ArrayList<WeightedLatLng> l = new ArrayList<>();
+        l.add(new WeightedLatLng(new LatLng(1, 1), 1));
 
         mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(list)
+                .weightedData(l)
                 .radius(20)
                 .opacity(1)
                 .build();
@@ -135,6 +133,19 @@ public class MainHeatmap extends FragmentActivity implements LocationListener{
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
         System.out.println("bounds: " + bounds.toString());
 
+        int c = 0;
+        int i = 0;
+        while (i < accidents.size() && c < 200) {
+            if (bounds.contains(accidents.get(i).getLocation())) {
+                list.add(accidents.get(i));
+                c++;
+            }
+            i++;
+        }
+
+        if (list.size() == 0) {
+            list.add(new WeightedLatLng(new LatLng(1, 1), 1));
+        }
         mProvider.setWeightedData(list);
         mOverlay.clearTileCache();
     }
