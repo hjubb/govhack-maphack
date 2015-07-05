@@ -61,7 +61,7 @@ public class AccidentCollection {
         int renderCount = 0;
         while(!c.isAfterLast()) {
             LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
-            Accident a = new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6));
+            Accident a = new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), "Dry", c.getInt(7));
             if (Filters.toDisplay(a) && underRenderLimit(renderCount++)) {
                 accidents.add(a);
             }

@@ -26,7 +26,7 @@ public class DatabaseHelp extends SQLiteAssetHelper {
     public Cursor getAccidents(LatLngBounds bounds, int limit){
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        String[] sqlSelect = {"0 _id","LAT","LONG","COUNT_FATALITY","COUNT_HOSPITAL","COUNT_MAJOR","COUNT_MINOR"};
+        String[] sqlSelect = {"0 _id","LAT","LONG","COUNT_FATALITY","COUNT_HOSPITAL","COUNT_MAJOR","COUNT_MINOR", "CRASH_HOUR"};
         String sqlTable = "accidents";
         qb.setTables(sqlTable);
 

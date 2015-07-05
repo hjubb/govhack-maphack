@@ -133,13 +133,13 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         try {
             maxSeverity = Integer.parseInt(SP.getString("maxSeverity", "nf"));
         } catch (Exception e) {maxSeverity = -1;}
-        //int weather = SP.getInt("weatherValues", -1);
-        //int daytimeValues = SP.getInt("daytimeValues", -1);
+        weather = SP.getInt("weatherValues", -1);
+        daytimeValues = SP.getInt("daytimeValues", -1);
 
         MinSeverityFilter.setMinSeverity(minSeverity);
         MaxSeverityFilter.setMaxSeverity(maxSeverity);
-        //if (weather != -1) RoadSurfaceFilter.setRoadSurface(weather);
-        //if (daytimeValues != -1) LightingFilter.setLighting(daytimeValues);
+        if (weather != -1) RoadSurfaceFilter.setRoadSurface(weather);
+        if (daytimeValues != -1) LightingFilter.setLighting(daytimeValues);
     }
 
     @Override
