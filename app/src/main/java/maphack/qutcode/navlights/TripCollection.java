@@ -32,7 +32,6 @@ public class TripCollection {
         } else {
             trips.add(currentTrip.end());
             currentTrip = null;
-            mMap.clear();
         }
     }
 

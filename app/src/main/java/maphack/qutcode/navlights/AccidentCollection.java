@@ -133,4 +133,8 @@ public class AccidentCollection {
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
+
+    public void updateOverlay() {
+        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+    }
 }

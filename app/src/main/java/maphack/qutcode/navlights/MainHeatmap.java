@@ -92,7 +92,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
                         //Add here the controls for the buttons responses
                         if (position == 0) {
                             mMap.clear();
-                            ac.setupData(MainHeatmap.this);
+                            ac.updateOverlay();
                             MainHeatmap.this.tc.startOrEndTrip();
                         } else if (position == 1) {
 
