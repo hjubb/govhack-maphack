@@ -10,7 +10,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 public class DatabaseHelp extends SQLiteAssetHelper {
 
-    private static final String DATABASE_NAME = "accidentsandroid.db";
+    private static final String DATABASE_NAME = "accidentsandroidnew.db";
     private static final int DATABASE_VERSION = 1;
 
     public DatabaseHelp(Context context) {
