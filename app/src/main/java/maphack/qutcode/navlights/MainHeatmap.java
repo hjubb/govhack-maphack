@@ -81,8 +81,8 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Start"),
-                        new PrimaryDrawerItem().withName("False")
+                        new PrimaryDrawerItem().withName("Start/Stop"),
+                        new PrimaryDrawerItem().withName("View Logs")
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
