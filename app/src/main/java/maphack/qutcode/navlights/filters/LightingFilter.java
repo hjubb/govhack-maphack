@@ -7,10 +7,11 @@ import maphack.qutcode.navlights.Accident;
  */
 public class LightingFilter extends Filter {
     private static int lighting;
-    public static final int SUNRISE = 0;
-    public static final int MIDDAY = 1;
-    public static final int SUNSET = 2;
-    public static final int NIGHT = 3;
+    public static final int ANY = 0;
+    public static final int SUNRISE = 1;
+    public static final int MIDDAY = 2;
+    public static final int SUNSET = 3;
+    public static final int NIGHT = 4;
 
     public LightingFilter() {
         lighting = SUNRISE;
@@ -22,7 +23,7 @@ public class LightingFilter extends Filter {
     }
 
     public static void setLighting(int light) {
-        if (light >= 0 && light < 4) {
+        if (light > 0 && light <= 4) {
             lighting = light;
             Filters.activateFilter(Filters.LightingFilter, true);
         } else {

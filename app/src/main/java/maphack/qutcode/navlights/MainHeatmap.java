@@ -53,6 +53,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     private AccidentCollection ac;
     private LocationManager lm;
     private TripCollection tc;
+    private boolean track = true;
 
 
     private ListView mLearnerMenu;
@@ -82,13 +83,22 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
                 .withActivity(this)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName("Start/Stop"),
-                        new PrimaryDrawerItem().withName("View Logs")
+                        new PrimaryDrawerItem().withName("View Logs"),
+                        new PrimaryDrawerItem().withName("Track/UnTrack")
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         //Add here the controls for the buttons responses
-                        MainHeatmap.this.tc.startOrEndTrip();
+                        if (position == 0) {
+                            mMap.clear();
+                            ac.setupData(MainHeatmap.this);
+                            MainHeatmap.this.tc.startOrEndTrip();
+                        } else if (position == 1) {
+
+                        } else if (position == 2) {
+                            track = !track;
+                        }
                         return false;
                     }
                 })
@@ -133,13 +143,20 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         try {
             maxSeverity = Integer.parseInt(SP.getString("maxSeverity", "nf"));
         } catch (Exception e) {maxSeverity = -1;}
-        weather = SP.getInt("weatherValues", -1);
-        daytimeValues = SP.getInt("daytimeValues", -1);
+
+        try {
+            weather = Integer.parseInt(SP.getString("weatherPref", "nf"));
+        } catch (Exception e) {weather = -1;}
+
+        try {
+            daytimeValues = Integer.parseInt(SP.getString("daytimePref", "nf"));
+        } catch (Exception e) {daytimeValues = -1;}
 
         MinSeverityFilter.setMinSeverity(minSeverity);
         MaxSeverityFilter.setMaxSeverity(maxSeverity);
-        if (weather != -1) RoadSurfaceFilter.setRoadSurface(weather);
-        if (daytimeValues != -1) LightingFilter.setLighting(daytimeValues);
+        RoadSurfaceFilter.setRoadSurface(weather);
+        LightingFilter.setLighting(daytimeValues);
+        ac.setupData(MainHeatmap.this);
     }
 
     @Override
@@ -213,9 +230,11 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     public void onLocationChanged(Location location) {
         tc.updateCurrentTrip(location);
 
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
-        mMap.animateCamera(update);
+        if (track) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CameraUpdate update = CameraUpdateFactory.newLatLng(latLng);
+            mMap.animateCamera(update);
+        }
     }
 
     @Override

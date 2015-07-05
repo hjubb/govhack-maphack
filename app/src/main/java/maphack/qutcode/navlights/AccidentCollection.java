@@ -70,7 +70,7 @@ public class AccidentCollection {
 
         for (int i = 0; i < count; i++) {
             LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
-            Accident a = new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), "Dry", c.getInt(7));
+            Accident a = new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), c.getString(7), c.getInt(8));
             if (Filters.toDisplay(a) && underRenderLimit(renderCount++)) {
                 accidents.add(a);
             }

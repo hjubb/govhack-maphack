@@ -26,14 +26,15 @@ public class DatabaseHelp extends SQLiteAssetHelper {
     public Cursor getAccidents(LatLngBounds bounds, int limit){
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        String[] sqlSelect = {"0 _id","LAT","LONG","COUNT_FATALITY","COUNT_HOSPITAL","COUNT_MAJOR","COUNT_MINOR", "CRASH_HOUR"};
+        String[] sqlSelect = {"0 _id","LAT","LONG","COUNT_FATALITY","COUNT_HOSPITAL","COUNT_MAJOR","COUNT_MINOR", "CRASH_SURFACE", "CRASH_HOUR"};
         String sqlTable = "accidents";
         qb.setTables(sqlTable);
 
         Cursor c = qb.query(db,sqlSelect,"LAT <= "+bounds.northeast.latitude
                         +" AND LAT >= "+bounds.southwest.latitude
                         +" AND LONG <= "+bounds.northeast.longitude
-                        +" AND LONG >= "+bounds.southwest.longitude,
+                        +" AND LONG >= "+bounds.southwest.longitude
+                        +" AND LAT <> 0.0",
                 null,
                 null,null,null);
         c.moveToFirst();

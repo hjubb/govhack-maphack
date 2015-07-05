@@ -7,8 +7,9 @@ import maphack.qutcode.navlights.Accident;
  */
 public class RoadSurfaceFilter extends Filter{
     private static int roadSurface;
-    public static final int DRY = 0;
-    public static final int WET = 1;
+    public static final int ANY = 0;
+    public static final int DRY = 1;
+    public static final int WET = 2;
 
     public RoadSurfaceFilter() {
         roadSurface = WET;
@@ -20,7 +21,7 @@ public class RoadSurfaceFilter extends Filter{
     }
 
     public static void setRoadSurface(int rs) {
-        if (rs >= 0 && rs < 2) {
+        if (rs > 0 && rs <= 2) {
             roadSurface = rs;
             Filters.activateFilter(Filters.RoadSurfaceFilter, true);
         } else {
