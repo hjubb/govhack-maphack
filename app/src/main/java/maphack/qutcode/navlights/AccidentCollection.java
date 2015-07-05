@@ -2,10 +2,14 @@ package maphack.qutcode.navlights;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.database.CharArrayBuffer;
 import android.database.Cursor;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
@@ -31,6 +35,9 @@ public class AccidentCollection {
     private DatabaseHelp DataBase;
     private final int RENDER_LIMIT = 350;
     private String CSV_PATH = "csv/weightedlocations.csv";
+    private static final LatLng UQ = new LatLng(-27.4975628,153.0133963);
+    private LatLngBounds AUSTRALIA = new LatLngBounds(
+            new LatLng(-44, 113), new LatLng(-10, 154));
 
     public AccidentCollection(GoogleMap map, Context context) {
         mMap = map;
@@ -59,7 +66,9 @@ public class AccidentCollection {
         }
         Cursor c = DataBase.getAccidents(mMap.getProjection().getVisibleRegion().latLngBounds,RENDER_LIMIT);
         int renderCount = 0;
-        while(!c.isAfterLast()) {
+        int count = c.getCount();
+
+        for (int i = 0; i < count; i++) {
             LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
             Accident a = new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6));
             if (Filters.toDisplay(a) && underRenderLimit(renderCount++)) {
@@ -117,5 +126,11 @@ public class AccidentCollection {
                 .opacity(0.8)
                 .build();
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(UQ)
+                .zoom(13)
+                .bearing(0)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 }
