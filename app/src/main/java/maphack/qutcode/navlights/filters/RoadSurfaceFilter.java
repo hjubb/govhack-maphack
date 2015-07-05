@@ -21,6 +21,11 @@ public class RoadSurfaceFilter extends Filter{
     }
 
     public static void setRoadSurface(int rs) {
-        roadSurface = rs;
+        if (rs >= 0 && rs < 2) {
+            roadSurface = rs;
+            Filters.activateFilter(Filters.RoadSurfaceFilter, true);
+        } else {
+            Filters.activateFilter(Filters.RoadSurfaceFilter, false);
+        }
     }
 }

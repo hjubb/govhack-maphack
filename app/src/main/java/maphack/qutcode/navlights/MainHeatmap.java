@@ -36,8 +36,14 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import java.util.Map;
+
 import maphack.qutcode.navlights.AppPreferences;
 import maphack.qutcode.navlights.filters.Filters;
+import maphack.qutcode.navlights.filters.LightingFilter;
+import maphack.qutcode.navlights.filters.MaxSeverityFilter;
+import maphack.qutcode.navlights.filters.MinSeverityFilter;
+import maphack.qutcode.navlights.filters.RoadSurfaceFilter;
 
 public class MainHeatmap extends AppCompatActivity implements LocationListener{
 
@@ -63,7 +69,6 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         setContentView(R.layout.activity_main_heatmap);
         setUpMapIfNeeded();
 
-        
         //Toggle Button
         /* mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
@@ -73,28 +78,21 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         addDrawerItems();
 
         */
-
-
-
         Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName("Test 1"),
-                        new PrimaryDrawerItem().withName("Test 2")
+                        new PrimaryDrawerItem().withName("Start"),
+                        new PrimaryDrawerItem().withName("False")
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         //Add here the controls for the buttons responses
+                        MainHeatmap.this.tc.startOrEndTrip();
                         return false;
                     }
                 })
                 .build();
-
-
-
-
-
     }
 
     @Override
@@ -124,8 +122,19 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     
     public void checkSettings(){
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        Log.d("SETTINGS",SP.getString("daytimePref","1"));
+        //SharedPreferences SP = this.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
+        //Log.d("SETTINGS",SP.getString("daytimePref","notFound"));
 
+        String minSeverity = SP.getString("minSeverity", "nf");
+        String maxSeverity = SP.getString("maxSeverity", "nf");
+        //int weather = SP.getInt("weatherValues", -1);
+        //int daytimeValues = SP.getInt("daytimeValues", -1);
+
+        //System.out.println("minSev: " + minSeverity);
+        if (minSeverity != "" && minSeverity != "nf") MinSeverityFilter.setMinSeverity(Integer.parseInt(minSeverity));
+        if (maxSeverity != "" && maxSeverity != "nf") MaxSeverityFilter.setMaxSeverity(Integer.parseInt(maxSeverity));
+        //if (weather != -1) RoadSurfaceFilter.setRoadSurface(weather);
+        //if (daytimeValues != -1) LightingFilter.setLighting(daytimeValues);
     }
 
     @Override

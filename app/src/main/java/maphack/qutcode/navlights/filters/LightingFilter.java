@@ -23,6 +23,11 @@ public class LightingFilter extends Filter {
     }
 
     public static void setLighting(int light) {
-        lighting = light;
+        if (light >= 0 && light < 4) {
+            lighting = light;
+            Filters.activateFilter(Filters.LightingFilter, true);
+        } else {
+            Filters.activateFilter(Filters.LightingFilter, false);
+        }
     }
 }

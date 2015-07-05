@@ -18,6 +18,11 @@ public class MinSeverityFilter extends Filter {
     }
 
     public static void setMinSeverity(int minf) {
-        minSeverity = minf;
+        if (minf > 0 && minf <= 20) {
+            minSeverity = minf;
+            Filters.activateFilter(Filters.minSeverityFilter, true);
+        } else {
+            Filters.activateFilter(Filters.minSeverityFilter, false);
+        }
     }
 }

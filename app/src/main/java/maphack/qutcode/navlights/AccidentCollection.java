@@ -18,6 +18,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import maphack.qutcode.navlights.filters.Filters;
+
 /**
  * Created by kane on 4/07/2015.
  */
@@ -57,17 +59,18 @@ public class AccidentCollection {
         }
         Cursor c = DataBase.getAccidents(mMap.getProjection().getVisibleRegion().latLngBounds,RENDER_LIMIT);
         int renderCount = 0;
-        while(!c.isAfterLast() && underRenderLimit(renderCount++)) {
+        while(!c.isAfterLast()) {
             LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
-            accidents.add(new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6)));
+            Accident a = new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6));
+            if (Filters.toDisplay(a) && underRenderLimit(renderCount++)) {
+                accidents.add(a);
+            }
             c.moveToNext();
         }
-        if (renderCount == 0)
-        {
-            return;
+        if (renderCount != 0) {
+            mProvider.setWeightedData(accidents);
+            mOverlay.clearTileCache();
         }
-        mProvider.setWeightedData(accidents);
-        mOverlay.clearTileCache();
         //c.close();
         //DataBase.close();
     }

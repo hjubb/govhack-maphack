@@ -18,6 +18,11 @@ public class MaxSeverityFilter extends Filter{
     }
 
     public static void setMaxSeverity(int maxs) {
-        maxSeverity = maxs;
+        if (maxs > 0 && maxs <= 20) {
+            maxSeverity = maxs;
+            Filters.activateFilter(Filters.maxSeverityFilter, true);
+        } else {
+            Filters.activateFilter(Filters.maxSeverityFilter, false);
+        }
     }
 }
