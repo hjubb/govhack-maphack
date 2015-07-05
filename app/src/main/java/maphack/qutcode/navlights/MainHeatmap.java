@@ -124,15 +124,20 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //SharedPreferences SP = this.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
         //Log.d("SETTINGS",SP.getString("daytimePref","notFound"));
+        int minSeverity, maxSeverity, weather, daytimeValues;
 
-        String minSeverity = SP.getString("minSeverity", "nf");
-        String maxSeverity = SP.getString("maxSeverity", "nf");
+        try {
+            minSeverity = Integer.parseInt(SP.getString("minSeverity", "nf"));
+        } catch (Exception e) {minSeverity = -1;}
+
+        try {
+            maxSeverity = Integer.parseInt(SP.getString("maxSeverity", "nf"));
+        } catch (Exception e) {maxSeverity = -1;}
         //int weather = SP.getInt("weatherValues", -1);
         //int daytimeValues = SP.getInt("daytimeValues", -1);
 
-        //System.out.println("minSev: " + minSeverity);
-        if (minSeverity != "" && minSeverity != "nf") MinSeverityFilter.setMinSeverity(Integer.parseInt(minSeverity));
-        if (maxSeverity != "" && maxSeverity != "nf") MaxSeverityFilter.setMaxSeverity(Integer.parseInt(maxSeverity));
+        MinSeverityFilter.setMinSeverity(minSeverity);
+        MaxSeverityFilter.setMaxSeverity(maxSeverity);
         //if (weather != -1) RoadSurfaceFilter.setRoadSurface(weather);
         //if (daytimeValues != -1) LightingFilter.setLighting(daytimeValues);
     }

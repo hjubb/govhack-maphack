@@ -31,7 +31,7 @@ public class Filters {
 
     public static boolean toDisplay(Accident a) {
         for (Filter f : filters) {
-            if (!f.condition(a)) {
+            if (!f.check(a)) {
                 return false;
             }
         }
