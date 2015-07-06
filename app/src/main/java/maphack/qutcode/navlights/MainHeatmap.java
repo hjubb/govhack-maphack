@@ -84,20 +84,28 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName("Start/Stop"),
                         new PrimaryDrawerItem().withName("View Logs"),
-                        new PrimaryDrawerItem().withName("Track/UnTrack")
-                )
+                        new PrimaryDrawerItem().withName("Track/UnTrack"),
+                        new PrimaryDrawerItem().withName("Set render size")
+
+        )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         //Add here the controls for the buttons responses
-                        if (position == 0) {
-                            mMap.clear();
-                            ac.updateOverlay();
-                            MainHeatmap.this.tc.startOrEndTrip();
-                        } else if (position == 1) {
-
-                        } else if (position == 2) {
-                            track = !track;
+                        switch(position) {
+                            case 0:
+                                mMap.clear();
+                                ac.updateData();
+                                MainHeatmap.this.tc.startOrEndTrip();
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                track = !track;
+                                break;
+                            case 3:
+                                ac.updateBounds();
+                                break;
                         }
                         return false;
                     }
@@ -134,7 +142,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //SharedPreferences SP = this.getSharedPreferences("general_settings", Context.MODE_PRIVATE);
         //Log.d("SETTINGS",SP.getString("daytimePref","notFound"));
-        int minSeverity, maxSeverity, weather, daytimeValues;
+        int minSeverity, maxSeverity, weather, daytimeValues, renderLimit;
 
         try {
             minSeverity = Integer.parseInt(SP.getString("minSeverity", "nf"));
@@ -152,11 +160,18 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
             daytimeValues = Integer.parseInt(SP.getString("daytimePref", "nf"));
         } catch (Exception e) {daytimeValues = -1;}
 
+        try {
+            renderLimit = Integer.parseInt(SP.getString("renderLimit", "nf"));
+        } catch (Exception e) {renderLimit = -1;}
+
         MinSeverityFilter.setMinSeverity(minSeverity);
         MaxSeverityFilter.setMaxSeverity(maxSeverity);
         RoadSurfaceFilter.setRoadSurface(weather);
         LightingFilter.setLighting(daytimeValues);
-        ac.setupData(MainHeatmap.this);
+        if (ac != null) {
+            ac.updateRenderLimit(renderLimit);
+            ac.setupData();
+        }
     }
 
     @Override
@@ -164,7 +179,9 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         super.onResume();
         checkSettings();
         setUpMapIfNeeded();
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        if (lm != null) {
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        }
     }
 
     @Override
@@ -218,7 +235,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                MainHeatmap.this.ac.setupData(getApplicationContext());
+                //MainHeatmap.this.ac.setupData();
             }
         });
 

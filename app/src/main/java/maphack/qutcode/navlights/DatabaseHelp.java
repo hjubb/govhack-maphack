@@ -36,7 +36,7 @@ public class DatabaseHelp extends SQLiteAssetHelper {
                         +" AND LONG >= "+bounds.southwest.longitude
                         +" AND LAT <> 0.0",
                 null,
-                null,null,null);
+                null,null,null, limit + "");
         c.moveToFirst();
         return c;
 

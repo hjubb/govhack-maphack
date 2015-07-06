@@ -33,16 +33,18 @@ public class AccidentCollection {
     private TileOverlay mOverlay;
     private GoogleMap mMap;
     private DatabaseHelp DataBase;
-    private final int RENDER_LIMIT = 350;
+    private int renderLimit = 10;
     private String CSV_PATH = "csv/weightedlocations.csv";
     private static final LatLng UQ = new LatLng(-27.4975628,153.0133963);
     private LatLngBounds AUSTRALIA = new LatLngBounds(
             new LatLng(-44, 113), new LatLng(-10, 154));
+    private LatLngBounds bounds = AUSTRALIA;
 
     public AccidentCollection(GoogleMap map, Context context) {
         mMap = map;
         setupHeatMap();
-        setupData(context);
+        DataBase = new DatabaseHelp(context);
+        setupData();
     }
 
 //    public void updateHeatMap() {
@@ -55,33 +57,48 @@ public class AccidentCollection {
 //        }
 //    }
 
-    private boolean underRenderLimit(int renderCount) {
-        return renderCount < 350;
-    }
-
-    public void setupData(Context context) {
+    public void setupData() {
         accidents = new ArrayList<WeightedLatLng>();
-        if (DataBase == null) {
-            DataBase = new DatabaseHelp(context);
-        }
-        Cursor c = DataBase.getAccidents(mMap.getProjection().getVisibleRegion().latLngBounds,RENDER_LIMIT);
-        int renderCount = 0;
-        int count = c.getCount();
+        Cursor c = DataBase.getAccidents(bounds,renderLimit);
 
+        int count = c.getCount();
         for (int i = 0; i < count; i++) {
             LatLng location = new LatLng(c.getDouble(1), c.getDouble(2));
             Accident a = new Accident(location, c.getInt(3), c.getInt(4), c.getInt(5), c.getInt(6), c.getString(7), c.getInt(8));
-            if (Filters.toDisplay(a) && underRenderLimit(renderCount++)) {
-                accidents.add(a);
-            }
+            accidents.add(a);
             c.moveToNext();
         }
-        if (renderCount != 0) {
-            mProvider.setWeightedData(accidents);
-            mOverlay.clearTileCache();
+        if (accidents.size() > 0) {
+            updateData();
         }
         //c.close();
         //DataBase.close();
+    }
+
+    public void updateData() {
+        ArrayList<WeightedLatLng> ac = new ArrayList<>();
+        for (WeightedLatLng a : accidents) {
+            if (Filters.toDisplay((Accident) a)) {
+                ac.add(a);
+            }
+        }
+        if (ac.size() > 0) {
+            mProvider.setWeightedData(ac);
+            mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        }
+    }
+
+    public void updateBounds() {
+        bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        setupData();
+    }
+
+    public void updateRenderLimit(int lim) {
+        if (lim == -1) {
+            renderLimit = 10;
+        } else {
+            renderLimit = lim;
+        }
     }
 
 //    private void setupData(Context context) throws Exception {
@@ -132,9 +149,5 @@ public class AccidentCollection {
                 .bearing(0)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
-
-    public void updateOverlay() {
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
 }

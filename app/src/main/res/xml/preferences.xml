@@ -22,5 +22,10 @@
         android:entries="@array/daytimeOptions"
         android:entryValues="@array/daytimeValues"/>
 
+    <EditTextPreference android:title="Render Limit"
+        android:key="renderLimit"
+        android:inputType="number"
+        android:summary="Please provide the max amount of data points to be shown on the map"></EditTextPreference>
+
 
 </PreferenceScreen>
