@@ -54,6 +54,7 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
     private LocationManager lm;
     private TripCollection tc;
     private boolean track = true;
+    private float previousZoom = 0;
 
 
     private ListView mLearnerMenu;
@@ -170,7 +171,6 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         LightingFilter.setLighting(daytimeValues);
         if (ac != null) {
             ac.updateRenderLimit(renderLimit);
-            ac.setupData();
         }
     }
 
@@ -235,12 +235,18 @@ public class MainHeatmap extends AppCompatActivity implements LocationListener{
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                //MainHeatmap.this.ac.setupData();
+                if (cameraPosition.zoom != previousZoom) {
+                    ac.updateBounds();
+                }
+                previousZoom = cameraPosition.zoom;
+                MainHeatmap.this.ac.updateIfNeeded();
             }
         });
 
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+
+        ac.updateBounds();
     }
 
     @Override

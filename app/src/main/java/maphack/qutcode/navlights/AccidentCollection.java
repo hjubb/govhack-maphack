@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
+import android.graphics.Color;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
@@ -32,12 +35,14 @@ public class AccidentCollection {
     private HeatmapTileProvider mProvider;
     private TileOverlay mOverlay;
     private GoogleMap mMap;
+    private Polyline boundsLine;
     private DatabaseHelp DataBase;
     private int renderLimit = 10;
     private String CSV_PATH = "csv/weightedlocations.csv";
-    private static final LatLng UQ = new LatLng(-27.4975628,153.0133963);
+    private static final LatLng UQ = new LatLng(-27.45865128326186,153.04429460316896);
     private LatLngBounds AUSTRALIA = new LatLngBounds(
-            new LatLng(-44, 113), new LatLng(-10, 154));
+            //new LatLng(-44, 113), new LatLng(-10, 154));
+            new LatLng(-27.5364603754385,152.98249684274197), new LatLng(-27.492583,153.018866));
     private LatLngBounds bounds = AUSTRALIA;
 
     public AccidentCollection(GoogleMap map, Context context) {
@@ -90,7 +95,10 @@ public class AccidentCollection {
 
     public void updateBounds() {
         bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        increaseBounds();
+        redrawBoundLines();
         setupData();
+        System.gc();
     }
 
     public void updateRenderLimit(int lim) {
@@ -99,6 +107,53 @@ public class AccidentCollection {
         } else {
             renderLimit = lim;
         }
+        updateBounds();
+    }
+
+    public void updateIfNeeded() {
+        LatLngBounds cameraBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        //double d = Math.abs(Math.abs(cameraBounds.northeast.longitude) - Math.abs(cameraBounds.southwest.longitude));
+        //!bounds.contains(cameraBounds.northeast) || !bounds.contains(cameraBounds.southwest)
+        if (!bounds.contains(cameraBounds.getCenter())) {
+//            double latdiff = (cameraBounds.northeast.latitude - cameraBounds.southwest.latitude);
+//            double lngdiff = (cameraBounds.northeast.longitude - cameraBounds.southwest.longitude);
+//            LatLng newNE = new LatLng(cameraBounds.getCenter().latitude + latdiff, cameraBounds.getCenter().longitude + lngdiff);
+//            LatLng newSW = new LatLng(cameraBounds.getCenter().latitude - latdiff, cameraBounds.getCenter().longitude - lngdiff);
+//            bounds = new LatLngBounds(newSW, newNE);
+
+            updateBounds();
+
+            setupData();
+        }
+    }
+
+    private void redrawBoundLines() {
+        mMap.clear();
+        //TODO re-attatch trip poly
+        boundsLine = mMap.addPolyline(new PolylineOptions()
+                .width(2)
+                .color(Color.BLACK)
+                .geodesic(true)
+                .visible(true)
+                .zIndex(0));
+
+        ArrayList<LatLng> boundPoints = new ArrayList<>();
+        boundPoints.add(bounds.northeast);
+        boundPoints.add(new LatLng(bounds.southwest.latitude, bounds.northeast.longitude));
+        boundPoints.add(bounds.southwest);
+        boundPoints.add(new LatLng(bounds.northeast.latitude, bounds.southwest.longitude));
+        boundPoints.add(bounds.northeast);
+
+        boundsLine.setPoints(boundPoints);
+    }
+
+    private void increaseBounds() {
+        double increasePercentage = 1.5;
+        double latadj = ((bounds.northeast.latitude - bounds.southwest.latitude) * (increasePercentage - 1));
+        //double lngadj = ((bounds.northeast.longitude - bounds.southwest.longitude) * (increasePercentage - 1));
+        LatLng newNE = new LatLng(bounds.northeast.latitude + latadj, bounds.northeast.longitude + latadj);
+        LatLng newSW = new LatLng(bounds.southwest.latitude - latadj, bounds.southwest.longitude - latadj);
+        bounds = new LatLngBounds(newSW, newNE);
     }
 
 //    private void setupData(Context context) throws Exception {
