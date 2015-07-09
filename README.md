@@ -1,26 +1,30 @@
-# [Start Bootstrap](http://startbootstrap.com/) - [Freelancer](http://startbootstrap.com/template-overviews/freelancer/)
+# govhack-maphack
+Helping Educate Queensland Drivers With Road Fatality Data
+*Built in Brisbane, Queensland Australia, by current QUT Students*
 
-[Freelancer](http://startbootstrap.com/template-overviews/freelancer/) is a one page freelancer portfolio theme for [Bootstrap](http://getbootstrap.com/) created by [Start Bootstrap](http://startbootstrap.com/). This theme features several content sections, a responsive portfolio grid with hover effects, full page portfolio item modals, and a working PHP contact form.
+## Motivation
+In 2015, a young group of coders (who are also young drivers) have chosen to build NavLights - an application designed to help educate drivers and instructors about the road fatalities using a tangible medium.
 
-## Getting Started
+By using the data presented by data.qld.gov.au, the project finds the exact location of road crash locations along with their level of fatality, and presents a heat map for easy viewing at their perusal, in hope that they are more educated about how real road fatalities are.
 
-To use this theme, choose one of the following options to get started:
-* Download the latest release on Start Bootstrap
-* Fork this repository on GitHub
+Like what you see here? Please vote for us on our [HackerSpace](https://hackerspace.govhack.org/content/navlights)!
 
-## Bugs and Issues
+### What is NavLights?
+NavLights is an educational solution designed to bring interactive data on local road fatalities to all Queensland drivers – especially novice and new drivers! Originally built for Android using Google Maps and SQL databases, the application allows users to find out how fatal the roads they drive everyday are, with the aditional ability to filter out the different road conditions and fatalities – minor accidents, time of day, weather conditions. These filters will help educate drivers about the correlation between road fatalities and road conditions.
 
-Have a bug or an issue with this theme? [Open a new issue](https://github.com/IronSummitMedia/startbootstrap-freelancer/issues) here on GitHub or leave a comment on the [template overview page at Start Bootstrap](http://startbootstrap.com/template-overviews/freelancer/).
+### Why build NavLights?
+road, NavLights aims to educate Queensland drivers about how dangerous the roads can be. By creating an interactive heat map of accident prone locations that can be explored at the user’s perusal, NavLights aims to bring the statistics and data relating to road fatalities and conditions to a tangible medium.
 
-## Creator
+With this interactive application displaying local, familiar maps, novice drivers and drivers new to certain Queensland locations can anticipate how busy and how accident prone these roads will be. And with the ability to search local roads, parents and driving instructors can learn how busy and accident prone the local roads are to find suitable quiet roads for the use of teaching novice drivers new maneuvers and driving skills that’ll be essential for them.
 
-Start Bootstrap was created by and is maintained by **David Miller**, Managing Parter at [Iron Summit Media Strategies](http://www.ironsummitmedia.com/).
+## Data Sources
+Sample Road Crash Location Data with Latitude and Longitude: https://data.qld.gov.au/dataset/crash-data-from-queensland-roads
 
-* https://twitter.com/davidmillerskt
-* https://github.com/davidtmiller
-
-Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
-
-## Copyright and License
-
-Copyright 2013-2015 Iron Summit Media Strategies, LLC. Code released under the [Apache 2.0](https://github.com/IronSummitMedia/startbootstrap-freelancer/blob/gh-pages/LICENSE) license.
+## Contributors
+* Byron Mejia
+* Kane Nicholson
+* Matthew Laughlin
+* Harry Jubb
+* Connor Reichman
+* João Lucas Lucchetta
+* Adrian Lanzafame
